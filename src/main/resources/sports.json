@@ -1,0 +1,20 @@
+{
+  "badminton": {
+    "maxWindKph": 5,
+    "maxPrecipitationChance": 50,
+    "minTemperature": 10,
+    "maxTemperature": 30,
+    "minDurationHours": 2,
+    "preferWeekend": true,
+    "preferCloudCover": 50
+  },
+  "running": {
+    "maxWindKph": 15,
+    "maxPrecipitationChance": 20,
+    "minTemperature": 5,
+    "maxTemperature": 25,
+    "minDurationHours": 1,
+    "preferWeekend": false,
+    "preferCloudCover": 0
+  }
+}
