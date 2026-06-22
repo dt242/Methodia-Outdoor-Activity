@@ -4,6 +4,7 @@ import com.academy.outdooractivity.model.SportRule;
 import com.academy.outdooractivity.model.WeatherHour;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,9 +33,7 @@ public class IntervalFinder {
                 intervalEnd = hour;
             } else {
                 if (intervalStart != null) {
-                    if (getDurationHours(intervalStart, intervalEnd) >= rule.minDurationHours()) {
-                        intervals.add(formatInterval(intervalStart, intervalEnd));
-                    }
+                    addIntervalIfValid(intervals, intervalStart, intervalEnd, rule);
                     intervalStart = null;
                     intervalEnd = null;
                 }
@@ -42,16 +41,20 @@ public class IntervalFinder {
         }
 
         if (intervalStart != null) {
-            if (getDurationHours(intervalStart, intervalEnd) >= rule.minDurationHours()) {
-                intervals.add(formatInterval(intervalStart, intervalEnd));
-            }
+            addIntervalIfValid(intervals, intervalStart, intervalEnd, rule);
         }
 
         return intervals;
     }
 
+    private void addIntervalIfValid(List<String> intervals, WeatherHour start, WeatherHour end, SportRule rule) {
+        if (getDurationHours(start, end) >= rule.minDurationHours()) {
+            intervals.add(formatInterval(start, end));
+        }
+    }
+
     private long getDurationHours(WeatherHour start, WeatherHour end) {
-        return end.time().getHour() - start.time().getHour() + 1;
+        return Duration.between(start.time(), end.time()).toHours() + 1;
     }
 
     private String formatInterval(WeatherHour start, WeatherHour end) {

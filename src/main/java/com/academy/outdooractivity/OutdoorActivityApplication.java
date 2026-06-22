@@ -35,8 +35,8 @@ public class OutdoorActivityApplication implements CommandLineRunner {
 				new WeatherHour(LocalDateTime.of(2026, 6, 22, 8, 0), 20, 2, 0, 10, true),
 				new WeatherHour(LocalDateTime.of(2026, 6, 22, 9, 0), 22, 4, 0, 20, true),
 				new WeatherHour(LocalDateTime.of(2026, 6, 22, 10, 0), 23, 20, 0, 20, true),
-				new WeatherHour(LocalDateTime.of(2026, 6, 22, 11, 0), 24, 3, 0, 30, true),
-				new WeatherHour(LocalDateTime.of(2026, 6, 22, 12, 0), 25, 2, 0, 40, true)
+				new WeatherHour(LocalDateTime.of(2026, 6, 22, 23, 0), 24, 3, 0, 30, true),
+				new WeatherHour(LocalDateTime.of(2026, 6, 23, 0, 0), 25, 2, 0, 40, true)
 		);
 
 		List<String> result = intervalFinder.findSuitableIntervals(dummyForecast, badmintonRule);
