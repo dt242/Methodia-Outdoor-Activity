@@ -16,7 +16,7 @@ public class ActivityEvaluator {
             return false;
         }
 
-        if (hour.windKph() > rule.maxWindKph()) {
+        if (hour.gustKph() > rule.maxGustKph()) {
             return false;
         }
 
