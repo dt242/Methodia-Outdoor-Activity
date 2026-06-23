@@ -1,10 +1,10 @@
 package com.academy.outdooractivity.service;
 
 import com.academy.outdooractivity.model.SportRule;
+import com.academy.outdooractivity.model.TimeInterval;
 import com.academy.outdooractivity.model.WeatherHour;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,50 +17,33 @@ public class IntervalFinder {
         this.evaluator = evaluator;
     }
 
-    public List<String> findSuitableIntervals(List<WeatherHour> forecast, SportRule rule) {
-        List<String> intervals = new ArrayList<>();
-
-        WeatherHour intervalStart = null;
-        WeatherHour intervalEnd = null;
+    public List<TimeInterval> findSuitableIntervals(List<WeatherHour> forecast, SportRule rule) {
+        List<TimeInterval> intervals = new ArrayList<>();
+        List<WeatherHour> currentBlock = new ArrayList<>();
 
         for (WeatherHour hour : forecast) {
-            boolean isGood = evaluator.isSuitable(hour, rule);
-
-            if (isGood) {
-                if (intervalStart == null) {
-                    intervalStart = hour;
-                }
-                intervalEnd = hour;
+            if (evaluator.isSuitable(hour, rule)) {
+                currentBlock.add(hour);
             } else {
-                if (intervalStart != null) {
-                    addIntervalIfValid(intervals, intervalStart, intervalEnd, rule);
-                    intervalStart = null;
-                    intervalEnd = null;
-                }
+                addIntervalIfValid(intervals, currentBlock, rule);
+                currentBlock.clear();
             }
         }
 
-        if (intervalStart != null) {
-            addIntervalIfValid(intervals, intervalStart, intervalEnd, rule);
-        }
-
+        addIntervalIfValid(intervals, currentBlock, rule);
         return intervals;
     }
 
-    private void addIntervalIfValid(List<String> intervals, WeatherHour start, WeatherHour end, SportRule rule) {
-        if (getDurationHours(start, end) >= rule.minDurationHours()) {
-            intervals.add(formatInterval(start, end));
+    private void addIntervalIfValid(List<TimeInterval> intervals, List<WeatherHour> block, SportRule rule) {
+        if (!block.isEmpty() && block.size() >= rule.minDurationHours()) {
+            int startHour = block.get(0).time().getHour();
+            int endHour = block.get(block.size() - 1).time().plusHours(1).getHour();
+            double avgCloud = block.stream()
+                    .mapToInt(WeatherHour::cloudCover)
+                    .average()
+                    .orElse(0);
+            boolean isCloudPreferred = rule.preferCloudCover() > 0 && avgCloud >= rule.preferCloudCover();
+            intervals.add(new TimeInterval(startHour, endHour, isCloudPreferred));
         }
-    }
-
-    private long getDurationHours(WeatherHour start, WeatherHour end) {
-        return Duration.between(start.time(), end.time()).toHours() + 1;
-    }
-
-    private String formatInterval(WeatherHour start, WeatherHour end) {
-        int startHour = start.time().getHour();
-        int endHour = end.time().plusHours(1).getHour();
-
-        return String.format("%02d-%02d", startHour, endHour);
     }
 }
