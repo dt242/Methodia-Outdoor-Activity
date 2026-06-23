@@ -10,8 +10,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @SpringBootApplication
 public class OutdoorActivityApplication implements CommandLineRunner {
@@ -38,10 +40,27 @@ public class OutdoorActivityApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 		Map<String, SportRule> rules = configLoader.loadRules();
-		SportRule badmintonRule = rules.get("badminton");
 		var response = weatherApiClient.getForecast();
 		List<WeatherHour> weatherHours = weatherMapper.map(response);
-		List<String> result = intervalFinder.findSuitableIntervals(weatherHours, badmintonRule);
-		System.out.println("For Sofia: " + result);
+		Map<LocalDate, List<WeatherHour>> weatherByDate = weatherHours.stream()
+				.collect(Collectors.groupingBy(
+						hour -> hour.time().toLocalDate()
+				));
+
+		for (Map.Entry<String, SportRule> sportEntry : rules.entrySet()) {
+			String sportName = sportEntry.getKey();
+			SportRule rule = sportEntry.getValue();
+			System.out.printf("%n=== %s ===%n", sportName.toUpperCase());
+			weatherByDate.entrySet().stream()
+					.sorted(Map.Entry.comparingByKey())
+					.forEach(dayEntry -> {
+						LocalDate date = dayEntry.getKey();
+						List<WeatherHour> hoursForDay = dayEntry.getValue();
+						List<String> intervals = intervalFinder.findSuitableIntervals(hoursForDay, rule);
+						if (!intervals.isEmpty()) {
+							System.out.println(date + " -> " + intervals);
+						}
+					});
+		}
 	}
 }
