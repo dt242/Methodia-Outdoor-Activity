@@ -2,6 +2,7 @@ package com.academy.outdooractivity;
 
 import com.academy.outdooractivity.model.SportRule;
 import com.academy.outdooractivity.model.WeatherHour;
+import com.academy.outdooractivity.model.dto.ForecastResponse;
 import com.academy.outdooractivity.service.IntervalFinder;
 import com.academy.outdooractivity.service.SportsConfigLoader;
 import com.academy.outdooractivity.service.WeatherApiClient;
@@ -40,7 +41,13 @@ public class OutdoorActivityApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 		Map<String, SportRule> rules = configLoader.loadRules();
-		var response = weatherApiClient.getForecast();
+		ForecastResponse response;
+		try {
+			response = weatherApiClient.getForecast();
+		} catch (Exception e) {
+			System.err.println("Error loading forecast.");
+			return;
+		}
 		List<WeatherHour> weatherHours = weatherMapper.map(response);
 		Map<LocalDate, List<WeatherHour>> weatherByDate = weatherHours.stream()
 				.collect(Collectors.groupingBy(
