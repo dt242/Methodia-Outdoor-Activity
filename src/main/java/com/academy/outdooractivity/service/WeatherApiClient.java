@@ -1,6 +1,7 @@
 package com.academy.outdooractivity.service;
 
 import com.academy.outdooractivity.config.WeatherApiProperties;
+import com.academy.outdooractivity.model.dto.ForecastResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -15,7 +16,7 @@ public class WeatherApiClient {
         this.properties = properties;
     }
 
-    public String getForecastJson() {
+    public ForecastResponse getForecast() {
         String url = properties.getBaseUrl()
                 + "/forecast.json?key=" + properties.getApiKey()
                 + "&q=Sofia&days=2";
@@ -23,6 +24,6 @@ public class WeatherApiClient {
         return restClient.get()
                 .uri(url)
                 .retrieve()
-                .body(String.class);
+                .body(ForecastResponse.class);
     }
 }

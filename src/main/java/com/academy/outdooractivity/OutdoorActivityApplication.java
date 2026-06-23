@@ -20,7 +20,16 @@ public class OutdoorActivityApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
-		String jsonResponse = weatherApiClient.getForecastJson();
-		System.out.println(jsonResponse);
+		var response = weatherApiClient.getForecast();
+
+		System.out.println("Forecast days: " + response.forecast().forecastday().size());
+
+		var firstHour = response.forecast().forecastday().get(0).hour().get(0);
+		System.out.println(firstHour.tempC());
+		System.out.println(firstHour.gustKph());
+		System.out.println(firstHour.time());
+		System.out.println(firstHour.chanceOfRain());
+		System.out.println(firstHour.cloudCover());
+		System.out.println(firstHour.isDay());
 	}
 }

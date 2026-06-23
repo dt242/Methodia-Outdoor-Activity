@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public record WeatherHour(
         LocalDateTime time,
         double temperature,
-        double windKph,
+        double gustKph,
         int chanceOfRain,
         int cloudCover,
         boolean isDaylight

@@ -1,7 +1,7 @@
 package com.academy.outdooractivity.model;
 
 public record SportRule(
-        int maxWindKph,
+        int maxGustKph,
         int maxPrecipitationChance,
         int minTemperature,
         int maxTemperature,
