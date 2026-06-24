@@ -4,6 +4,9 @@ import com.academy.outdooractivity.config.WeatherApiProperties;
 import com.academy.outdooractivity.model.dto.ForecastResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 @Service
 public class WeatherApiClient {
@@ -17,12 +20,16 @@ public class WeatherApiClient {
     }
 
     public ForecastResponse getForecast() {
-        String url = properties.getBaseUrl()
-                + "/forecast.json?key=" + properties.getApiKey()
-                + "&q=Sofia&days=2";
+        URI uri = UriComponentsBuilder.fromUriString(properties.getBaseUrl())
+                .path("/forecast.json")
+                .queryParam("key", properties.getKey())
+                .queryParam("q", properties.getLocation())
+                .queryParam("days", properties.getForecastDays())
+                .build()
+                .toUri();
 
         return restClient.get()
-                .uri(url)
+                .uri(uri)
                 .retrieve()
                 .body(ForecastResponse.class);
     }
