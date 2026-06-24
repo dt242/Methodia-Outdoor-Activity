@@ -52,11 +52,13 @@ public class ActivityPlannerService {
 
     private void printSportReport(String sportName, SportRule rule, Map<LocalDate, List<WeatherHour>> weatherByDate) {
         System.out.printf("%n=== %s ===%n", sportName.toUpperCase());
-        boolean[] hasAnyIntervals = {false};
-        weatherByDate.forEach((date, hoursForDay) -> {
+        boolean hasAnyIntervals = false;
+        for (Map.Entry<LocalDate, List<WeatherHour>> entry : weatherByDate.entrySet()) {
+            LocalDate date = entry.getKey();
+            List<WeatherHour> hoursForDay = entry.getValue();
             List<TimeInterval> rawIntervals = intervalFinder.findSuitableIntervals(hoursForDay, rule);
             if (!rawIntervals.isEmpty()) {
-                hasAnyIntervals[0] = true;
+                hasAnyIntervals = true;
                 boolean preferredWeekend = rule.preferWeekend() && isWeekend(date);
                 DayResult dayResult = new DayResult(date, rawIntervals, preferredWeekend);
                 System.out.printf("%nDate: %s", dayResult.date());
@@ -64,13 +66,14 @@ public class ActivityPlannerService {
                     System.out.print(" (preferred weekend)");
                 }
                 System.out.println("\nIntervals:");
-                dayResult.intervals().forEach(interval ->
-                        System.out.println("  - " + interval)
-                );
-            }
-        });
 
-        if (!hasAnyIntervals[0]) {
+                for (TimeInterval interval : dayResult.intervals()) {
+                    System.out.println("  - " + interval);
+                }
+            }
+        }
+
+        if (!hasAnyIntervals) {
             System.out.println("No suitable intervals found.");
         }
     }
