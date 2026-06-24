@@ -19,7 +19,8 @@ public class WeatherApiClient {
     public ForecastResponse getForecast() {
         String url = properties.getBaseUrl()
                 + "/forecast.json?key=" + properties.getApiKey()
-                + "&q=Sofia&days=2";
+                + "&q=" + properties.getLocation()
+                + "&days=" + properties.getForecastDays();
 
         return restClient.get()
                 .uri(url)
