@@ -2,15 +2,15 @@ package com.academy.outdooractivity.service;
 
 import com.academy.outdooractivity.model.WeatherHour;
 import com.academy.outdooractivity.model.dto.ForecastResponse;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Service
-public class WeatherMapper {
+public final class WeatherMapper {
 
-    public List<WeatherHour> map(ForecastResponse response) {
+    private WeatherMapper() {}
+
+    public static List<WeatherHour> map(ForecastResponse response) {
         return response.forecast()
                 .forecastday()
                 .stream()

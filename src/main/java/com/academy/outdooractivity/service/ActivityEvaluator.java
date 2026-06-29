@@ -2,12 +2,12 @@ package com.academy.outdooractivity.service;
 
 import com.academy.outdooractivity.model.SportRule;
 import com.academy.outdooractivity.model.WeatherHour;
-import org.springframework.stereotype.Service;
 
-@Service
-public class ActivityEvaluator {
+public final class ActivityEvaluator {
 
-    public boolean isSuitable(WeatherHour hour, SportRule rule) {
+    private ActivityEvaluator() {}
+
+    public static boolean isSuitable(WeatherHour hour, SportRule rule) {
         if (!hour.isDaylight()) {
             return false;
         }

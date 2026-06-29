@@ -17,16 +17,13 @@ import java.util.stream.Collectors;
 public class ActivityPlannerService {
 
     private final WeatherApiClient weatherApiClient;
-    private final WeatherMapper weatherMapper;
     private final SportsConfigLoader configLoader;
     private final IntervalFinder intervalFinder;
 
     public ActivityPlannerService(WeatherApiClient weatherApiClient,
-                                  WeatherMapper weatherMapper,
                                   SportsConfigLoader configLoader,
                                   IntervalFinder intervalFinder) {
         this.weatherApiClient = weatherApiClient;
-        this.weatherMapper = weatherMapper;
         this.configLoader = configLoader;
         this.intervalFinder = intervalFinder;
     }
@@ -40,7 +37,7 @@ public class ActivityPlannerService {
             System.err.println("Unable to retrieve forecast: " + e.getMessage());
             return;
         }
-        List<WeatherHour> weatherHours = weatherMapper.map(response);
+        List<WeatherHour> weatherHours = WeatherMapper.map(response);
         Map<LocalDate, List<WeatherHour>> weatherByDate = weatherHours.stream()
                 .collect(Collectors.groupingBy(
                         hour -> hour.time().toLocalDate(),

@@ -11,18 +11,14 @@ import java.util.List;
 @Service
 public class IntervalFinder {
 
-    private final ActivityEvaluator evaluator;
-
-    public IntervalFinder(ActivityEvaluator evaluator) {
-        this.evaluator = evaluator;
-    }
+    public IntervalFinder() {}
 
     public List<TimeInterval> findSuitableIntervals(List<WeatherHour> forecast, SportRule rule) {
         List<TimeInterval> intervals = new ArrayList<>();
         List<WeatherHour> currentBlock = new ArrayList<>();
 
         for (WeatherHour hour : forecast) {
-            if (evaluator.isSuitable(hour, rule)) {
+            if (ActivityEvaluator.isSuitable(hour, rule)) {
                 currentBlock.add(hour);
             } else {
                 addIntervalIfValid(intervals, currentBlock, rule);
