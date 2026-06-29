@@ -1,4 +1,4 @@
-package com.academy.outdooractivity.service;
+package com.academy.outdooractivity.util;
 
 import com.academy.outdooractivity.model.WeatherHour;
 import com.academy.outdooractivity.model.dto.ForecastResponse;

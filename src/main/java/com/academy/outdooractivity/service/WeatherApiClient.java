@@ -19,12 +19,12 @@ public class WeatherApiClient {
         this.properties = properties;
     }
 
-    public ForecastResponse getForecast() {
+    public ForecastResponse getForecast(String location, int forecastDays) {
         URI uri = UriComponentsBuilder.fromUriString(properties.getBaseUrl())
                 .path("/forecast.json")
                 .queryParam("key", properties.getKey())
-                .queryParam("q", properties.getLocation())
-                .queryParam("days", properties.getForecastDays())
+                .queryParam("q", location)
+                .queryParam("days", forecastDays)
                 .build()
                 .toUri();
 

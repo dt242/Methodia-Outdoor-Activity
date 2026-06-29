@@ -3,8 +3,10 @@ package com.academy.outdooractivity.service;
 import com.academy.outdooractivity.model.DayResult;
 import com.academy.outdooractivity.model.SportRule;
 import com.academy.outdooractivity.model.TimeInterval;
+import com.academy.outdooractivity.model.UserRequest;
 import com.academy.outdooractivity.model.WeatherHour;
 import com.academy.outdooractivity.model.dto.ForecastResponse;
+import com.academy.outdooractivity.util.WeatherMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,10 +31,11 @@ public class ActivityPlannerService {
     }
 
     public void printSuitableActivities() {
-        Map<String, SportRule> rules = configLoader.loadRules();
+        UserRequest request = configLoader.loadConfig();
+        Map<String, SportRule> rules = request.sports();
         ForecastResponse response;
         try {
-            response = weatherApiClient.getForecast();
+            response = weatherApiClient.getForecast(request.location(), request.forecastDays());
         } catch (Exception e) {
             System.err.println("Unable to retrieve forecast: " + e.getMessage());
             return;

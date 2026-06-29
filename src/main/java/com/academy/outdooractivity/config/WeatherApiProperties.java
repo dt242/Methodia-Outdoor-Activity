@@ -9,8 +9,6 @@ public class WeatherApiProperties {
 
     private String key;
     private String baseUrl;
-    private String location;
-    private int forecastDays;
 
     public String getKey() {
         return key;
@@ -26,21 +24,5 @@ public class WeatherApiProperties {
 
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public int getForecastDays() {
-        return forecastDays;
-    }
-
-    public void setForecastDays(int forecastDays) {
-        this.forecastDays = forecastDays;
     }
 }
