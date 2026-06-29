@@ -1,5 +1,6 @@
 package com.academy.outdooractivity.service;
 
+import com.academy.outdooractivity.model.ActivityResult;
 import com.academy.outdooractivity.model.DayResult;
 import com.academy.outdooractivity.model.SportRule;
 import com.academy.outdooractivity.model.TimeInterval;
@@ -10,6 +11,7 @@ import com.academy.outdooractivity.util.WeatherMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -30,7 +32,8 @@ public class ActivityPlannerService {
         this.intervalFinder = intervalFinder;
     }
 
-    public void printSuitableActivities() {
+    public List<ActivityResult> findSuitableActivities() {
+        List<ActivityResult> results = new ArrayList<>();
         UserRequest request = configLoader.loadConfig();
         Map<String, SportRule> rules = request.sports();
         ForecastResponse response;
@@ -38,7 +41,7 @@ public class ActivityPlannerService {
             response = weatherApiClient.getForecast(request.location(), request.forecastDays());
         } catch (Exception e) {
             System.err.println("Unable to retrieve forecast: " + e.getMessage());
-            return;
+            return results;
         }
         List<WeatherHour> weatherHours = WeatherMapper.map(response);
         Map<LocalDate, List<WeatherHour>> weatherByDate = weatherHours.stream()
@@ -47,35 +50,27 @@ public class ActivityPlannerService {
                         TreeMap::new,
                         Collectors.toList()
                 ));
-        rules.forEach((sportName, rule) -> printSportReport(sportName, rule, weatherByDate));
+        rules.forEach((sportName, rule) -> {
+            List<DayResult> dayResults = calculateSportReport(rule, weatherByDate);
+            results.add(new ActivityResult(sportName, dayResults));
+        });
+        return results;
     }
 
-    private void printSportReport(String sportName, SportRule rule, Map<LocalDate, List<WeatherHour>> weatherByDate) {
-        System.out.printf("%n=== %s ===%n", sportName.toUpperCase());
-        boolean hasAnyIntervals = false;
+    private List<DayResult> calculateSportReport(SportRule rule, Map<LocalDate, List<WeatherHour>> weatherByDate) {
+        List<DayResult> dayResults = new ArrayList<>();
+
         for (Map.Entry<LocalDate, List<WeatherHour>> entry : weatherByDate.entrySet()) {
             LocalDate date = entry.getKey();
             List<WeatherHour> hoursForDay = entry.getValue();
             List<TimeInterval> rawIntervals = intervalFinder.findSuitableIntervals(hoursForDay, rule);
             if (!rawIntervals.isEmpty()) {
-                hasAnyIntervals = true;
                 boolean preferredWeekend = rule.preferWeekend() && isWeekend(date);
-                DayResult dayResult = new DayResult(date, rawIntervals, preferredWeekend);
-                System.out.printf("%nDate: %s", dayResult.date());
-                if (dayResult.preferredWeekend()) {
-                    System.out.print(" (preferred weekend)");
-                }
-                System.out.println("\nIntervals:");
-
-                for (TimeInterval interval : dayResult.intervals()) {
-                    System.out.println("  - " + interval);
-                }
+                dayResults.add(new DayResult(date, rawIntervals, preferredWeekend));
             }
         }
 
-        if (!hasAnyIntervals) {
-            System.out.println("No suitable intervals found.");
-        }
+        return dayResults;
     }
 
     private boolean isWeekend(LocalDate date) {
