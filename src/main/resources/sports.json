@@ -1,6 +1,10 @@
 {
   "location": "Sofia",
   "forecastDays": 2,
+  "notification": {
+    "email": "test@example.com",
+    "weekendOnly": true
+  },
   "sports": {
     "badminton": {
       "maxGustKph": 5,
