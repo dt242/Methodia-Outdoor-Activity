@@ -31,6 +31,6 @@ public class WeatherMonitorService {
         UserRequest request = configLoader.loadConfig();
         List<ActivityResult> results = plannerService.findSuitableActivities(request);
         consolePrinter.print(results);
-        notificationService.notify(results, request.notification());
+        notificationService.sendNotification(results, request.notification());
     }
 }

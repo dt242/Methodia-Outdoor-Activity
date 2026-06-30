@@ -1,9 +1,8 @@
 package com.academy.outdooractivity.service;
 
 import com.academy.outdooractivity.model.ActivityResult;
-import com.academy.outdooractivity.model.DayResult;
 import com.academy.outdooractivity.model.NotificationRule;
-import com.academy.outdooractivity.model.TimeInterval;
+import com.academy.outdooractivity.ui.EmailFormatter;
 import org.springframework.context.annotation.Primary;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -16,53 +15,31 @@ import java.util.List;
 public class SmtpEmailService implements NotificationService {
 
     private final JavaMailSender mailSender;
+    private final NotificationEvaluator evaluator;
+    private final EmailFormatter formatter;
 
-    public SmtpEmailService(JavaMailSender mailSender) {
+    public SmtpEmailService(JavaMailSender mailSender,
+                            NotificationEvaluator evaluator,
+                            EmailFormatter formatter) {
         this.mailSender = mailSender;
+        this.evaluator = evaluator;
+        this.formatter = formatter;
     }
 
     @Override
-    public void notify(List<ActivityResult> results, NotificationRule rule) {
-        if (results.isEmpty()) {
+    public void sendNotification(List<ActivityResult> results, NotificationRule rule) {
+        if (!evaluator.shouldNotify(results, rule)) {
+            System.out.println("Skip notification.");
             return;
         }
 
-        if (rule.weekendOnly()) {
-            boolean hasWeekendActivities = results.stream()
-                    .flatMap(activityResult -> activityResult.dayResults().stream())
-                    .anyMatch(dayResult -> dayResult.date().getDayOfWeek().getValue() >= 6);
-
-            if (!hasWeekendActivities) {
-                System.out.println("Skip email. No valid intervals.");
-                return;
-            }
-        }
-
-        StringBuilder emailBody = new StringBuilder();
-        emailBody.append("Hello,\n\nPerfect weather conditions have been found based on your criteria:\n");
-
-        for (ActivityResult result : results) {
-            if (!result.hasIntervals()) continue;
-
-            emailBody.append("\n=== ").append(result.sportName().toUpperCase()).append(" ===\n");
-            for (DayResult dayResult : result.dayResults()) {
-                emailBody.append("Date: ").append(dayResult.date());
-                if (dayResult.preferredWeekend()) {
-                    emailBody.append(" (preferred weekend)");
-                }
-                emailBody.append("\nIntervals:\n");
-                for (TimeInterval interval : dayResult.intervals()) {
-                    emailBody.append("  - ").append(interval).append("\n");
-                }
-            }
-        }
+        String emailBody = formatter.buildEmailBody(results);
 
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(rule.email());
-            message.setSubject("🏃 Perfect weather for your sports!");
-            message.setText(emailBody.toString());
-
+            message.setSubject("Outdoor Activity Alert");
+            message.setText(emailBody);
             mailSender.send(message);
             System.out.println("Sent email to " + rule.email());
         } catch (Exception e) {

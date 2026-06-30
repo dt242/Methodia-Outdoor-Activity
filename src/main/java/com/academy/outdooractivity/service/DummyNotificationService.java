@@ -9,23 +9,18 @@ import java.util.List;
 @Service
 public class DummyNotificationService implements NotificationService {
 
+    private final NotificationEvaluator evaluator;
+
+    public DummyNotificationService(NotificationEvaluator evaluator) {
+        this.evaluator = evaluator;
+    }
+
     @Override
-    public void notify(List<ActivityResult> results, NotificationRule rule) {
-        if (results.isEmpty()) {
+    public void sendNotification(List<ActivityResult> results, NotificationRule rule) {
+        if (!evaluator.shouldNotify(results, rule)) {
+            System.out.println("Skip notification.");
             return;
         }
-
-        if (rule.weekendOnly()) {
-            boolean hasWeekendActivities = results.stream()
-                    .flatMap(activityResult -> activityResult.dayResults().stream())
-                    .anyMatch(dayResult -> dayResult.date().getDayOfWeek().getValue() >= 6);
-
-            if (!hasWeekendActivities) {
-                System.out.println("Skip email service: found valid intervals but not on a weekend");
-                return;
-            }
-        }
-
         System.out.println("Dummy email service activated");
         System.out.println("To: " + rule.email());
     }

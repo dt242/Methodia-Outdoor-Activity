@@ -5,5 +5,5 @@ import com.academy.outdooractivity.model.NotificationRule;
 import java.util.List;
 
 public interface NotificationService {
-    void notify(List<ActivityResult> results, NotificationRule rule);
+    void sendNotification(List<ActivityResult> results, NotificationRule rule);
 }
