@@ -1,4 +1,4 @@
-package com.academy.outdooractivity.service;
+package com.academy.outdooractivity.planner;
 
 import com.academy.outdooractivity.model.ActivityResult;
 import com.academy.outdooractivity.model.DayResult;
@@ -6,9 +6,10 @@ import com.academy.outdooractivity.model.SportRule;
 import com.academy.outdooractivity.model.TimeInterval;
 import com.academy.outdooractivity.model.UserRequest;
 import com.academy.outdooractivity.model.WeatherHour;
-import com.academy.outdooractivity.model.dto.ForecastResponse;
+import com.academy.outdooractivity.weather.WeatherApiClient;
+import com.academy.outdooractivity.weather.dto.ForecastResponse;
 import com.academy.outdooractivity.util.DateUtils;
-import com.academy.outdooractivity.util.WeatherMapper;
+import com.academy.outdooractivity.weather.WeatherMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

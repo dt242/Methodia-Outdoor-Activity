@@ -1,4 +1,4 @@
-package com.academy.outdooractivity.service;
+package com.academy.outdooractivity.notification;
 
 import com.academy.outdooractivity.model.ActivityResult;
 import com.academy.outdooractivity.model.DayResult;

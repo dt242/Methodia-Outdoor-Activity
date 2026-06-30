@@ -2,6 +2,8 @@ package com.academy.outdooractivity.service;
 
 import com.academy.outdooractivity.model.ActivityResult;
 import com.academy.outdooractivity.model.UserRequest;
+import com.academy.outdooractivity.notification.NotificationService;
+import com.academy.outdooractivity.planner.ActivityPlannerService;
 import com.academy.outdooractivity.ui.ConsolePrinter;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

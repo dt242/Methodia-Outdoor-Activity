@@ -1,8 +1,7 @@
-package com.academy.outdooractivity.service;
+package com.academy.outdooractivity.notification;
 
 import com.academy.outdooractivity.model.ActivityResult;
 import com.academy.outdooractivity.model.NotificationRule;
-import com.academy.outdooractivity.ui.EmailFormatter;
 import org.springframework.context.annotation.Primary;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

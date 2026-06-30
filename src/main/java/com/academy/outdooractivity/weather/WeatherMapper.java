@@ -1,7 +1,7 @@
-package com.academy.outdooractivity.util;
+package com.academy.outdooractivity.weather;
 
 import com.academy.outdooractivity.model.WeatherHour;
-import com.academy.outdooractivity.model.dto.ForecastResponse;
+import com.academy.outdooractivity.weather.dto.ForecastResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
