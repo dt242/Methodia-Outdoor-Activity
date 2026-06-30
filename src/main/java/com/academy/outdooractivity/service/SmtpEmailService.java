@@ -28,12 +28,12 @@ public class SmtpEmailService implements NotificationService {
 
     @Override
     public void sendNotification(List<ActivityResult> results, NotificationRule rule) {
-        if (!evaluator.shouldNotify(results, rule)) {
+        List<ActivityResult> filteredResults = evaluator.filterForNotification(results, rule);
+        if (filteredResults.isEmpty()) {
             System.out.println("Skip notification.");
             return;
         }
-
-        String emailBody = formatter.buildEmailBody(results);
+        String emailBody = formatter.buildEmailBody(filteredResults);
 
         try {
             SimpleMailMessage message = new SimpleMailMessage();
