@@ -21,20 +21,16 @@ import java.util.stream.Collectors;
 public class ActivityPlannerService {
 
     private final WeatherApiClient weatherApiClient;
-    private final SportsConfigLoader configLoader;
     private final IntervalFinder intervalFinder;
 
     public ActivityPlannerService(WeatherApiClient weatherApiClient,
-                                  SportsConfigLoader configLoader,
                                   IntervalFinder intervalFinder) {
         this.weatherApiClient = weatherApiClient;
-        this.configLoader = configLoader;
         this.intervalFinder = intervalFinder;
     }
 
-    public List<ActivityResult> findSuitableActivities() {
+    public List<ActivityResult> findSuitableActivities(UserRequest request) {
         List<ActivityResult> results = new ArrayList<>();
-        UserRequest request = configLoader.loadConfig();
         Map<String, SportRule> rules = request.sports();
         ForecastResponse response;
         try {

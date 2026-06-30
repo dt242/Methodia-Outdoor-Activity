@@ -29,7 +29,7 @@ public class WeatherMonitorService {
     @Scheduled(cron = "${weather.monitor.cron}")
     public void checkWeatherPeriodically() {
         UserRequest request = configLoader.loadConfig();
-        List<ActivityResult> results = plannerService.findSuitableActivities();
+        List<ActivityResult> results = plannerService.findSuitableActivities(request);
         consolePrinter.print(results);
         notificationService.notify(results, request.notification());
     }
