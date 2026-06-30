@@ -1,9 +1,8 @@
-package com.academy.outdooractivity.service;
+package com.academy.outdooractivity.planner;
 
 import com.academy.outdooractivity.model.SportRule;
 import com.academy.outdooractivity.model.TimeInterval;
 import com.academy.outdooractivity.model.WeatherHour;
-import com.academy.outdooractivity.util.ActivityEvaluator;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

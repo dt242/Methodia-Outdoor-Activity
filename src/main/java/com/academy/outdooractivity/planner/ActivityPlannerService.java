@@ -1,4 +1,4 @@
-package com.academy.outdooractivity.service;
+package com.academy.outdooractivity.planner;
 
 import com.academy.outdooractivity.model.ActivityResult;
 import com.academy.outdooractivity.model.DayResult;
@@ -6,8 +6,10 @@ import com.academy.outdooractivity.model.SportRule;
 import com.academy.outdooractivity.model.TimeInterval;
 import com.academy.outdooractivity.model.UserRequest;
 import com.academy.outdooractivity.model.WeatherHour;
-import com.academy.outdooractivity.model.dto.ForecastResponse;
-import com.academy.outdooractivity.util.WeatherMapper;
+import com.academy.outdooractivity.weather.WeatherApiClient;
+import com.academy.outdooractivity.weather.dto.ForecastResponse;
+import com.academy.outdooractivity.util.DateUtils;
+import com.academy.outdooractivity.weather.WeatherMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,20 +23,16 @@ import java.util.stream.Collectors;
 public class ActivityPlannerService {
 
     private final WeatherApiClient weatherApiClient;
-    private final SportsConfigLoader configLoader;
     private final IntervalFinder intervalFinder;
 
     public ActivityPlannerService(WeatherApiClient weatherApiClient,
-                                  SportsConfigLoader configLoader,
                                   IntervalFinder intervalFinder) {
         this.weatherApiClient = weatherApiClient;
-        this.configLoader = configLoader;
         this.intervalFinder = intervalFinder;
     }
 
-    public List<ActivityResult> findSuitableActivities() {
+    public List<ActivityResult> findSuitableActivities(UserRequest request) {
         List<ActivityResult> results = new ArrayList<>();
-        UserRequest request = configLoader.loadConfig();
         Map<String, SportRule> rules = request.sports();
         ForecastResponse response;
         try {
@@ -65,15 +63,11 @@ public class ActivityPlannerService {
             List<WeatherHour> hoursForDay = entry.getValue();
             List<TimeInterval> rawIntervals = intervalFinder.findSuitableIntervals(hoursForDay, rule);
             if (!rawIntervals.isEmpty()) {
-                boolean preferredWeekend = rule.preferWeekend() && isWeekend(date);
+                boolean preferredWeekend = rule.preferWeekend() && DateUtils.isWeekend(date);
                 dayResults.add(new DayResult(date, rawIntervals, preferredWeekend));
             }
         }
 
         return dayResults;
-    }
-
-    private boolean isWeekend(LocalDate date) {
-        return date.getDayOfWeek().getValue() >= 6;
     }
 }

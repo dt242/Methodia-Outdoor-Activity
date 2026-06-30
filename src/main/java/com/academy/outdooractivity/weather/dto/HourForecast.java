@@ -1,4 +1,4 @@
-package com.academy.outdooractivity.model.dto;
+package com.academy.outdooractivity.weather.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

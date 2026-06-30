@@ -1,4 +1,4 @@
-package com.academy.outdooractivity.util;
+package com.academy.outdooractivity.planner;
 
 import com.academy.outdooractivity.model.SportRule;
 import com.academy.outdooractivity.model.WeatherHour;

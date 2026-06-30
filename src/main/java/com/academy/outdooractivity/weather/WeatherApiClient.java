@@ -1,7 +1,7 @@
-package com.academy.outdooractivity.service;
+package com.academy.outdooractivity.weather;
 
 import com.academy.outdooractivity.config.WeatherApiProperties;
-import com.academy.outdooractivity.model.dto.ForecastResponse;
+import com.academy.outdooractivity.weather.dto.ForecastResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
