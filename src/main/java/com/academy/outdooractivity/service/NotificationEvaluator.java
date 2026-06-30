@@ -3,6 +3,7 @@ package com.academy.outdooractivity.service;
 import com.academy.outdooractivity.model.ActivityResult;
 import com.academy.outdooractivity.model.DayResult;
 import com.academy.outdooractivity.model.NotificationRule;
+import com.academy.outdooractivity.util.DateUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class NotificationEvaluator {
         return results.stream()
                 .map(result -> {
                     List<DayResult> weekendDays = result.dayResults().stream()
-                            .filter(day -> day.date().getDayOfWeek().getValue() >= 6)
+                            .filter(day -> DateUtils.isWeekend(day.date()))
                             .toList();
 
                     return new ActivityResult(result.sportName(), weekendDays);

@@ -7,6 +7,7 @@ import com.academy.outdooractivity.model.TimeInterval;
 import com.academy.outdooractivity.model.UserRequest;
 import com.academy.outdooractivity.model.WeatherHour;
 import com.academy.outdooractivity.model.dto.ForecastResponse;
+import com.academy.outdooractivity.util.DateUtils;
 import com.academy.outdooractivity.util.WeatherMapper;
 import org.springframework.stereotype.Service;
 
@@ -61,15 +62,11 @@ public class ActivityPlannerService {
             List<WeatherHour> hoursForDay = entry.getValue();
             List<TimeInterval> rawIntervals = intervalFinder.findSuitableIntervals(hoursForDay, rule);
             if (!rawIntervals.isEmpty()) {
-                boolean preferredWeekend = rule.preferWeekend() && isWeekend(date);
+                boolean preferredWeekend = rule.preferWeekend() && DateUtils.isWeekend(date);
                 dayResults.add(new DayResult(date, rawIntervals, preferredWeekend));
             }
         }
 
         return dayResults;
-    }
-
-    private boolean isWeekend(LocalDate date) {
-        return date.getDayOfWeek().getValue() >= 6;
     }
 }
