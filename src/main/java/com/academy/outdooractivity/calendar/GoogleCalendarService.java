@@ -1,6 +1,5 @@
 package com.academy.outdooractivity.calendar;
 
-import com.academy.outdooractivity.model.ActivityResult;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import org.springframework.stereotype.Service;
@@ -11,19 +10,16 @@ import java.util.List;
 public class GoogleCalendarService implements CalendarService {
 
     private final Calendar googleCalendar;
-    private final CalendarEventMapper mapper;
 
-    public GoogleCalendarService(Calendar googleCalendar, CalendarEventMapper mapper) {
+    public GoogleCalendarService(Calendar googleCalendar) {
         this.googleCalendar = googleCalendar;
-        this.mapper = mapper;
     }
 
     @Override
-    public void createEvents(List<ActivityResult> results) {
-        if (results.isEmpty()) {
+    public void createEvents(List<Event> events) {
+        if (events == null || events.isEmpty()) {
             return;
         }
-        List<Event> events = mapper.mapToEvents(results);
 
         for (Event event : events) {
             try {

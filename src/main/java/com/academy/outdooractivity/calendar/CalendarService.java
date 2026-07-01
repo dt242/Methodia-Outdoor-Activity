@@ -1,8 +1,8 @@
 package com.academy.outdooractivity.calendar;
 
-import com.academy.outdooractivity.model.ActivityResult;
+import com.google.api.services.calendar.model.Event;
 import java.util.List;
 
 public interface CalendarService {
-    void createEvents(List<ActivityResult> results);
+    void createEvents(List<Event> events);
 }
