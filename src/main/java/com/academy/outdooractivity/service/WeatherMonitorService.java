@@ -1,5 +1,6 @@
 package com.academy.outdooractivity.service;
 
+import com.academy.outdooractivity.calendar.CalendarService;
 import com.academy.outdooractivity.model.ActivityResult;
 import com.academy.outdooractivity.model.UserRequest;
 import com.academy.outdooractivity.notification.NotificationService;
@@ -17,15 +18,18 @@ public class WeatherMonitorService {
     private final ConsolePrinter consolePrinter;
     private final NotificationService notificationService;
     private final SportsConfigLoader configLoader;
+    private final CalendarService calendarService;
+
 
     public WeatherMonitorService(ActivityPlannerService plannerService,
                                  ConsolePrinter consolePrinter,
                                  NotificationService notificationService,
-                                 SportsConfigLoader configLoader) {
+                                 SportsConfigLoader configLoader, CalendarService calendarService) {
         this.plannerService = plannerService;
         this.consolePrinter = consolePrinter;
         this.notificationService = notificationService;
         this.configLoader = configLoader;
+        this.calendarService = calendarService;
     }
 
     @Scheduled(cron = "${weather.monitor.cron}")
@@ -34,5 +38,6 @@ public class WeatherMonitorService {
         List<ActivityResult> results = plannerService.findSuitableActivities(request);
         consolePrinter.print(results);
         notificationService.sendNotification(results, request.notification());
+        calendarService.createEvents(results);
     }
 }
